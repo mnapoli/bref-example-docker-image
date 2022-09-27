@@ -1,0 +1,29 @@
+service: tmp-docker
+
+provider:
+    name: aws
+    region: us-east-1
+    runtime: provided.al2
+    ecr:
+        images:
+            myimage:
+                path: ./
+
+functions:
+    s3:
+        image:
+            name: myimage
+            command: [src/handler.php]
+    console:
+        image:
+            name: myimage
+            entryPoint: [/opt/bootstrap-console]
+            command: [bin/console.php]
+
+# Exclude files from deployment
+package:
+    patterns:
+        - '!tests/**'
+
+plugins:
+    - ./vendor/bref/bref
